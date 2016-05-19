@@ -1,0 +1,34 @@
+{
+  "name": "png2teletext",
+  "version": "1.0.0",
+  "description": "PNG to Teletext graphics converter",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hngrhorace/png2teletext.git"
+  },
+  "keywords": [
+    "teletext",
+    "png"
+  ],
+  "author": "Andor Polgar",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hngrhorace/png2teletext/issues"
+  },
+  "homepage": "https://github.com/hngrhorace/png2teletext#readme",
+  "devDependencies": {
+    "babel-cli": "^6.5.1",
+    "babel-plugin-add-module-exports": "^0.1.2",
+    "babel-preset-es2015": "^6.5.0",
+    "browserify": "^13.0.0"
+  },
+  "scripts": {
+    "build:babel": "babel src --out-dir dist",
+    "build:browserify": "browserify dist/index.js --standalone png2teletext > browser/png2teletext.js",
+    "build": "npm run build:babel && npm run build:browserify"
+  }
+}

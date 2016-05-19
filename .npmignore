@@ -1,0 +1,5 @@
+src
+browser
+.gitignore
+node_modules
+.babelrc
