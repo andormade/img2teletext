@@ -6,7 +6,8 @@
   "scripts": {
     "build:babel": "babel src --out-dir dist",
     "build:browserify": "browserify dist/index.js --standalone png2teletext > browser/png2teletext.js",
-    "build": "npm run build:babel && npm run build:browserify"
+    "build": "npm run build:babel && npm run build:browserify",
+	"prepublish": "npm run build"
   },
   "repository": {
     "type": "git",
