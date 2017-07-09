@@ -1,10 +1,10 @@
-function getMask(charRow: number, charCol: number) {
+function getMask(charRow: number, charCol: number): number {
 	return (charCol === 1 && charRow === 2)
 		? (1 << 6)
 		: 1 << (charCol + (charRow * 2));
 }
 
-function getPngCoordinates(i: number, width: number) {
+function getPngCoordinates(i: number, width: number): array {
 	let widtha = width * 4;
 	return [
 		Math.floor(i / widtha),
@@ -12,26 +12,22 @@ function getPngCoordinates(i: number, width: number) {
 	];
 }
 
-function getTeletextCoordinates(pngRow: number, pngCol: number) {
+function getTeletextCoordinates(pngRow: number, pngCol: number): array {
 	return [
 		Math.floor(pngRow / 3),
 		Math.floor(pngCol / 2)
 	];
 }
 
-function getSegmentCoordinates(pngRow: number, pngCol: number) {
+function getSegmentCoordinates(pngRow: number, pngCol: number): array {
 	return [
 		pngRow % 3,
 		pngCol % 2
 	];
 }
 
-function create2dArray(rows: number, cols: number, fill) {
-	let arr = new Array(rows);
-	for (let i = 0; i < rows; i++) {
-		arr[i] = new Array(cols).fill(fill);
-	}
-	return arr;
+function create2dArray(rows: number, cols: number, fill: mixed): array {
+	return new Array(rows).fill(new Array(cols).fill(fill));
 }
 
 function getTeletextDimensions(pngWidth: number, pngHeight: number) {
@@ -41,11 +37,11 @@ function getTeletextDimensions(pngWidth: number, pngHeight: number) {
 	];
 }
 
-function getPngHeight(pngData, width: number) {
+function getPngHeight(pngData: object, width: number): number {
 	return Math.ceil((pngData.length / 4) / width);
 }
 
-export default function png2teletext(graphics, width: number) {
+export default function png2teletext(graphics: object, width: number): array {
 	let height = getPngHeight(graphics, width);
 	let [teletextRows, teletextCols] = getTeletextDimensions(width, height);
 	let teletext = create2dArray(teletextRows, teletextCols, 32);
