@@ -5,6 +5,8 @@ var rewire = require('rewire'),
 	getTeletextCoordinates = png2teletext.__get__('getTeletextCoordinates'),
 	create2dArray = png2teletext.__get__('create2dArray');
 
+require('./integration.js');
+
 describe('getMask', function() {
 	it('should return 0x40 if col=1 and row=2', function() {
 		assert(getMask(1, 2), 0x40);
@@ -23,7 +25,8 @@ describe('getPngCoordinates', function() {
 
 describe('create2dArray', function() {
 	it('should return an array', function() {
-		assert(Array.isArray(create2dArray(10, 10, '')));
+		let arr = create2dArray(10, 10, '');
+		assert(Array.isArray(arr));
 	});
 
 	it('should have the correct length', function() {

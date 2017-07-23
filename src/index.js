@@ -27,7 +27,9 @@ function getSegmentCoordinates(pngRow: number, pngCol: number): array {
 }
 
 function create2dArray(rows: number, cols: number, fill: mixed): array {
-	return new Array(rows).fill(new Array(cols).fill(fill));
+	return new Array(rows).fill(null).map(() => {
+		return new Array(cols).fill(fill);
+	});
 }
 
 function getTeletextDimensions(pngWidth: number, pngHeight: number) {
@@ -41,7 +43,7 @@ function getPngHeight(pngData: object, width: number): number {
 	return Math.ceil((pngData.length / 4) / width);
 }
 
-export default function png2teletext(graphics: object, width: number): array {
+export default function png2teletext(graphics: array, width: number): array {
 	let height = getPngHeight(graphics, width);
 	let [teletextRows, teletextCols] = getTeletextDimensions(width, height);
 	let teletext = create2dArray(teletextRows, teletextCols, 32);
