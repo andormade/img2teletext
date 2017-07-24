@@ -2,7 +2,7 @@ var rewire = require('rewire'),
 	assert = require('assert'),
 	png2teletext = rewire('../dist/index.js'),
 	getMask = png2teletext.__get__('getMask'),
-	getTeletextCoordinates = png2teletext.__get__('getTeletextCoordinates'),
+	translatePngCoordinatesToTeletext = png2teletext.__get__('translatePngCoordinatesToTeletext'),
 	create2dArray = png2teletext.__get__('create2dArray');
 
 require('./integration.js');
@@ -13,13 +13,13 @@ describe('getMask', function() {
 	});
 });
 
-describe('getPngCoordinates', function() {
+describe('translatePngCoordinatesToTeletext', function() {
 	it('should return an array', function() {
-		assert(Array.isArray(getTeletextCoordinates(10, 10)));
+		assert(Array.isArray(translatePngCoordinatesToTeletext(10, 10)));
 	});
 
 	it('(3, 2) => [1, 1]', function() {
-		assert.deepStrictEqual(getTeletextCoordinates(3, 2), [1, 1]);
+		assert.deepStrictEqual(translatePngCoordinatesToTeletext(3, 2), [1, 1]);
 	});
 });
 
