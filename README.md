@@ -1,2 +1,3 @@
 # png2teletext
-Converts PNGs to Teletext graphics
+
+png2teletext is a functional JavaScript library for generating teletext level 1 compatible data from PNGs.
