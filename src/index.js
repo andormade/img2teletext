@@ -1,3 +1,5 @@
+import {create2dArray, forEach2d, copy2dArray} from './utils.js';
+
 const TELETEXT_COLOR_BLACK = 0x10;
 const TELETEXT_COLOR_RED = 0x11;
 const TELETEXT_COLOR_GREEN = 0x12;
@@ -43,28 +45,6 @@ function getSegmentCoordinates(pngRow: number, pngCol: number): array {
 		pngRow % TELETEXT_CHARACTER_HEIGHT,
 		pngCol % TELETEXT_CHARACTER_WIDTH
 	];
-}
-
-function create2dArray(rows: number, cols: number, filler: mixed): array {
-	return new Array(rows).fill(null).map(() => {
-		return new Array(cols).fill(filler);
-	});
-}
-
-function forEach2d(arr: array, callback: any): void {
-	for (let row = 0; row < arr.length; row++) {
-		for (let col = 0; col < arr[row].length; col++) {
-			callback(row, col);
-		}
-	}
-}
-
-function copy2dArray(arr: array): array {
-	let newArr = [];
-	for (let row = 0; row < arr.length; row++) {
-		newArr[row] = [...arr[row]];
-	}
-	return newArr;
 }
 
 function getTeletextDimensions(pngWidth: number, pngHeight: number): array {
