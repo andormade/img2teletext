@@ -6,7 +6,7 @@
   "scripts": {
     "build": "babel src --out-dir dist",
     "prepublish": "npm run test && npm run build",
-    "test": "npm run build && mocha"
+    "test": "npm run build && nyc mocha"
   },
   "repository": {
     "type": "git",
@@ -28,6 +28,7 @@
     "babel-preset-env": "^1.6.0",
     "babel-preset-flow": "^6.23.0",
     "mocha": "^3.4.2",
+    "nyc": "^11.0.3",
     "pngjs": "^3.2.0",
     "rewire": "^2.5.2"
   }
