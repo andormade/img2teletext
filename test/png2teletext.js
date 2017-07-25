@@ -1,12 +1,12 @@
 var rewire = require('rewire'),
 	png2teletext = rewire('../dist/index.js'),
-	TELETEXT_COLOR_WHITE = png2teletext.__get__('TELETEXT_COLOR_WHITE'),
+	TELETEXT_COLOR_BLACK = png2teletext.__get__('TELETEXT_COLOR_BLACK'),
 	assert = require('assert'),
 	fs = require('fs'),
 	PNG = require('pngjs').PNG;
 
 const test1 = [
-	[TELETEXT_COLOR_WHITE, 48, 96, 112],
+	[TELETEXT_COLOR_BLACK, 48, 96, 112],
 	[33, 49, 97, 113],
 	[34, 50, 98, 114],
 	[35, 51, 99, 115],

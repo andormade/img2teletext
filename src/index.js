@@ -51,14 +51,30 @@ function create2dArray(rows: number, cols: number, filler: mixed): array {
 	});
 }
 
-function getTeletextDimensions(pngWidth: number, pngHeight: number) {
+function forEach2d(arr: array, callback: any): void {
+	for (let row = 0; row < arr.length; row++) {
+		for (let col = 0; col < arr[row].length; col++) {
+			callback(row, col);
+		}
+	}
+}
+
+function copy2dArray(arr: array): array {
+	let newArr = [];
+	for (let row = 0; row < arr.length; row++) {
+		newArr[row] = [...arr[row]];
+	}
+	return newArr;
+}
+
+function getTeletextDimensions(pngWidth: number, pngHeight: number): array {
 	return [
 		Math.ceil(pngHeight / TELETEXT_CHARACTER_HEIGHT),
 		Math.ceil(pngWidth / TELETEXT_CHARACTER_WIDTH)
 	];
 }
 
-function translateRgbToTeletextColor(r, g, b) {
+function translateRgbToTeletextColor(r, g, b): void {
 	switch(true) {
 		case (r === 0x00 && g === 0x00 && b === 0x00) : return TELETEXT_COLOR_BLACK;
 		case (r === 0xff && g === 0x00 && b === 0x00) : return TELETEXT_COLOR_RED;
@@ -76,15 +92,15 @@ function getPngHeight(pngData: array, width: number): number {
 	return Math.ceil((pngData.length / NUMBER_OF_PNG_CHANNELS) / width);
 }
 
-function generateCharacterMap(imageData: array, pngWidth: number) {
-	let height = getPngHeight(imageData, pngWidth);
-	let [teletextRows, teletextCols] = getTeletextDimensions(pngWidth, height);
-	let characterMap = create2dArray(teletextRows, teletextCols, TELETEXT_EMPTY_CHARACTER);
+function generateCharacterMap(imageData: array, pngWidth: number): array {
+	let height = getPngHeight(imageData, pngWidth),
+		[teletextRows, teletextCols] = getTeletextDimensions(pngWidth, height),
+		characterMap = create2dArray(teletextRows, teletextCols, TELETEXT_EMPTY_CHARACTER);
 
 	for (let i = 0; i < imageData.length; i += NUMBER_OF_PNG_CHANNELS) {
-		let [pngRow, pngCol] = getPngCoordinatesFromBytePosition(i, pngWidth);
-		let [teletextRow, teletextCol] = translatePngCoordinatesToTeletext(pngRow, pngCol);
-		let [charRow, charCol] = getSegmentCoordinates(pngRow, pngCol);
+		let [pngRow, pngCol] = getPngCoordinatesFromBytePosition(i, pngWidth),
+			[teletextRow, teletextCol] = translatePngCoordinatesToTeletext(pngRow, pngCol),
+			[charRow, charCol] = getSegmentCoordinates(pngRow, pngCol);
 
 		/* If the alpha channel is not zero. */
 		if (imageData[i + PNG_CHANNEL_ALPHA] > 0x00) {
@@ -95,50 +111,50 @@ function generateCharacterMap(imageData: array, pngWidth: number) {
 	return characterMap;
 }
 
-function generateColorMap(imageData: array, pngWidth: number) {
-	let pngHeight = getPngHeight(imageData, pngWidth);
-	let [teletextRows, teletextCols] = getTeletextDimensions(pngWidth, pngHeight);
-	let colorMap = create2dArray(teletextRows, teletextCols, TELETEXT_EMPTY_CHARACTER);
+function generateColorMap(imageData: array, pngWidth: number): array {
+	let pngHeight = getPngHeight(imageData, pngWidth),
+		[teletextRows, teletextCols] = getTeletextDimensions(pngWidth, pngHeight),
+		colorMap = create2dArray(teletextRows, teletextCols, null);
 
 	for (let i = 0; i < imageData.length; i += NUMBER_OF_PNG_CHANNELS) {
-		let [pngRow, pngCol] = getPngCoordinatesFromBytePosition(i, pngWidth);
-		let [teletextRow, teletextCol] = translatePngCoordinatesToTeletext(pngRow, pngCol);
+		let [pngRow, pngCol] = getPngCoordinatesFromBytePosition(i, pngWidth),
+			[teletextRow, teletextCol] = translatePngCoordinatesToTeletext(pngRow, pngCol);
+
+		if (imageData[i + PNG_CHANNEL_ALPHA] === 0x00) {
+			continue;
+		}
 
 		colorMap[teletextRow][teletextCol] = translateRgbToTeletextColor(
-			imageData[i + PNG_CHANNEL_RED, i + PNG_CHANNEL_GREEN, i + PNG_CHANNEL_BLUE]
+			imageData[i + PNG_CHANNEL_RED],
+			imageData[i + PNG_CHANNEL_GREEN],
+			imageData[i + PNG_CHANNEL_BLUE]
 		);
 	}
 
 	return colorMap;
 }
 
-function mergeColorMapAndCharacterMap(characterMap, colorMap) {
-	let numRows = characterMap.length;
-	let numCols = characterMap[0].length;
-	let teletext = create2dArray(numRows, numCols, TELETEXT_EMPTY_CHARACTER);
+function mergeColorMapAndCharacterMap(characterMap: array, colorMap: array): array {
+	let numRows = characterMap.length,
+		numCols = characterMap[0].length,
+		teletext = copy2dArray(characterMap);
 
-	for (let row = 0; row < teletext.length; row++) {
-		for (let col = 0; col < teletext[row].length; col++) {
-			if (
-				characterMap[row][col] === TELETEXT_EMPTY_CHARACTER &&
-				colorMap[row][col + 1] &&
-				colorMap[row][col + 1] !== TELETEXT_EMPTY_CHARACTER
-			) {
-				teletext[row][col] = colorMap[row][col + 1];
-			}
-			else {
-				teletext[row][col] = characterMap[row][col];
-			}
+	forEach2d(teletext, (row, col) => {
+		if (
+			teletext[row][col] === TELETEXT_EMPTY_CHARACTER &&
+			colorMap[row][col + 1]
+		) {
+			teletext[row][col] = colorMap[row][col + 1];
 		}
-	}
+	});
 
 	return teletext;
 }
 
 export default function png2teletext(imageData: array, width: number): array {
-	let characterMap = generateCharacterMap(imageData, width);
-	let colorMap = generateColorMap(imageData, width);
-	let teletext = mergeColorMapAndCharacterMap(characterMap, colorMap);
+	let characterMap = generateCharacterMap(imageData, width),
+		colorMap = generateColorMap(imageData, width),
+		teletext = mergeColorMapAndCharacterMap(characterMap, colorMap);
 
 	return teletext;
 }
