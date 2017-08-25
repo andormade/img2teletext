@@ -1,7 +1,6 @@
-var rewire = require('rewire'),
-	assert = require('assert'),
-	png2teletext = rewire('../dist/index.js'),
-	translatePngCoordinatesToTeletext = png2teletext.__get__('translatePngCoordinatesToTeletext');
+var assert = require('assert'),
+	Utils = require('../dist/utils.js'),
+	translatePngCoordinatesToTeletext = Utils.translatePngCoordinatesToTeletext;
 
 describe('translatePngCoordinatesToTeletext', function() {
 	it('should return an array', function() {
