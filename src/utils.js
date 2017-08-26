@@ -25,15 +25,16 @@ export function copy2dArray(arr) {
 	return newArr;
 }
 
-export function getPngCoordinatesFromBytePosition(i, width) {
+export function getPngCoordinatesFromBytePosition(pos, width) {
 	let byteWidth = width * NUMBER_OF_PNG_CHANNELS;
 	return [
-		Math.floor(i / byteWidth),
-		(i % byteWidth) / NUMBER_OF_PNG_CHANNELS
+		(pos % byteWidth) / NUMBER_OF_PNG_CHANNELS,
+		Math.floor(pos / byteWidth)
 	];
 }
 
-export function translateRgbToTeletextColor(r, g, b) {
+export function translateRgbToTeletextColor(color) {
+	let [r, g, b] = color;
 	switch(true) {
 		case (r === 0x00 && g === 0x00 && b === 0x00) : return TELETEXT_COLOR_BLACK;
 		case (r === 0xff && g === 0x00 && b === 0x00) : return TELETEXT_COLOR_RED;
@@ -53,14 +54,14 @@ export const getMask = (charRow, charCol) => (
 		: 1 << (charCol + (charRow * 2))
 );
 
-export const translatePngCoordinatesToTeletext = (pngRow, pngCol) => ([
-	Math.floor(pngRow / TELETEXT_CHARACTER_HEIGHT),
-	Math.floor(pngCol / TELETEXT_CHARACTER_WIDTH)
+export const translatePngCoordinatesToTeletext = (x, y) => ([
+	Math.floor(y / TELETEXT_CHARACTER_HEIGHT),
+	Math.floor(x / TELETEXT_CHARACTER_WIDTH)
 ]);
 
-export const getSegmentCoordinates = (pngRow, pngCol) => ([
-	pngRow % TELETEXT_CHARACTER_HEIGHT,
-	pngCol % TELETEXT_CHARACTER_WIDTH
+export const getSegmentCoordinates = (x, y) => ([
+	y % TELETEXT_CHARACTER_HEIGHT,
+	x % TELETEXT_CHARACTER_WIDTH
 ]);
 
 export const getTeletextDimensions = (pngWidth, pngHeight) => ([
