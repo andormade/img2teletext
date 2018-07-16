@@ -1,6 +1,6 @@
 var rewire = require('rewire'),
 	assert = require('assert'),
-	utils = rewire('../dist/utils.js'),
+	utils = rewire('../src/utils'),
 	getMask = utils.getMask;
 
 describe('getMask', function() {

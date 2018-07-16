@@ -1,5 +1,5 @@
 var assert = require('assert'),
-	Utils = require('../dist/utils.js'),
+	Utils = require('../src/utils'),
 	translatePngCoordinatesToTeletext = Utils.translatePngCoordinatesToTeletext;
 
 describe('translatePngCoordinatesToTeletext', function() {

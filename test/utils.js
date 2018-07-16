@@ -1,6 +1,6 @@
 var assert = require('assert'),
-	create2dArray = require('../dist/utils.js').create2dArray,
-	copy2dArray = require('../dist/utils.js').copy2dArray;
+	create2dArray = require('../src/utils').create2dArray,
+	copy2dArray = require('../src/utils').copy2dArray;
 
 describe('create2dArray', function() {
 	it('should return an array', function() {

@@ -1,10 +1,10 @@
-import {create2dArray, forEach2d, copy2dArray, getMask, getTeletextDimensions,
+const {create2dArray, forEach2d, copy2dArray, getMask, getTeletextDimensions,
 	translatePngCoordinatesToTeletext, getSegmentCoordinates,
 	getPngHeight, getPngCoordinatesFromBytePosition,
-	translateRgbToTeletextColor} from './utils.js';
+	translateRgbToTeletextColor} = require('./utils');
 
-import {TELETEXT_EMPTY_CHARACTER, NUMBER_OF_PNG_CHANNELS, PNG_CHANNEL_ALPHA,
-	PNG_CHANNEL_RED, PNG_CHANNEL_GREEN, PNG_CHANNEL_BLUE} from './consts.js';
+const {TELETEXT_EMPTY_CHARACTER, NUMBER_OF_PNG_CHANNELS, PNG_CHANNEL_ALPHA,
+	PNG_CHANNEL_RED, PNG_CHANNEL_GREEN, PNG_CHANNEL_BLUE} = require('./consts.js');
 
 
 function mapImageData(buffer, pngWidth, fill, callback) {
@@ -66,7 +66,7 @@ function mergeColorMapAndCharacterMap(characterMap, colorMap) {
 	return teletext;
 }
 
-export default function png2teletext(imageBuffer, width) {
+module.exports = function png2teletext(imageBuffer, width) {
 	return mergeColorMapAndCharacterMap(
 		generateCharacterMap(imageBuffer, width),
 		generateColorMap(imageBuffer, width)

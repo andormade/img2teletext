@@ -1,6 +1,6 @@
 var rewire = require('rewire'),
-	png2teletext = rewire('../dist/index.js'),
-	Constants = require('../dist/consts.js'),
+	png2teletext = rewire('../src/index'),
+	Constants = require('../src/consts'),
 	TELETEXT_COLOR_BLACK = Constants.TELETEXT_COLOR_BLACK,
 	assert = require('assert'),
 	fs = require('fs'),
