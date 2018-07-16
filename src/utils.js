@@ -27,7 +27,7 @@ function forEach2d(arr, callback) {
 }
 
 function copy2dArray(arr) {
-	let newArr = [];
+	const newArr = [];
 	for (let row = 0; row < arr.length; row++) {
 		newArr[row] = [...arr[row]];
 	}
@@ -35,7 +35,7 @@ function copy2dArray(arr) {
 }
 
 function getPngCoordinatesFromBytePosition(pos, width) {
-	let byteWidth = width * NUMBER_OF_PNG_CHANNELS;
+	const byteWidth = width * NUMBER_OF_PNG_CHANNELS;
 	return [
 		(pos % byteWidth) / NUMBER_OF_PNG_CHANNELS,
 		Math.floor(pos / byteWidth),

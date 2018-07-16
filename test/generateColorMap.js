@@ -1,11 +1,10 @@
-var rewire = require('rewire'),
-	png2teletext = rewire('../src/index'),
-	Constants = require('../src/consts'),
-	TELETEXT_COLOR_BLACK = Constants.TELETEXT_COLOR_BLACK,
-	generateColorMap = png2teletext.__get__('generateColorMap'),
-	assert = require('assert'),
-	fs = require('fs'),
-	PNG = require('pngjs').PNG;
+const rewire = require('rewire');
+const png2teletext = rewire('../src/index');
+const { TELETEXT_COLOR_BLACK } = require('../src/consts');
+const generateColorMap = png2teletext.__get__('generateColorMap');
+const assert = require('assert');
+const fs = require('fs');
+const { PNG } = require('pngjs');
 
 const test1 = [
 	[null, TELETEXT_COLOR_BLACK, TELETEXT_COLOR_BLACK, TELETEXT_COLOR_BLACK],
@@ -103,9 +102,9 @@ const test1 = [
 
 describe('generateColorMap', function() {
 	it('should return with the correct colormap', function() {
-		let data = fs.readFileSync('./test/test.png'),
-			png = PNG.sync.read(data),
-			colorMap = generateColorMap(png.data, png.width);
+		const data = fs.readFileSync('./test/test.png');
+		const png = PNG.sync.read(data);
+		const colorMap = generateColorMap(png.data, png.width);
 
 		assert.deepStrictEqual(colorMap, test1);
 	});

@@ -1,6 +1,5 @@
-var assert = require('assert'),
-	Utils = require('../src/utils'),
-	translatePngCoordinatesToTeletext = Utils.translatePngCoordinatesToTeletext;
+const assert = require('assert');
+const { translatePngCoordinatesToTeletext } = require('../src/utils');
 
 describe('translatePngCoordinatesToTeletext', function() {
 	it('should return an array', function() {

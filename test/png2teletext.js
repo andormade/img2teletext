@@ -1,10 +1,9 @@
-var rewire = require('rewire'),
-	png2teletext = rewire('../src/index'),
-	Constants = require('../src/consts'),
-	TELETEXT_COLOR_BLACK = Constants.TELETEXT_COLOR_BLACK,
-	assert = require('assert'),
-	fs = require('fs'),
-	PNG = require('pngjs').PNG;
+const rewire = require('rewire');
+const png2teletext = rewire('../src/index');
+const { TELETEXT_COLOR_BLACK } = require('../src/consts');
+const assert = require('assert');
+const fs = require('fs');
+const PNG = require('pngjs').PNG;
 
 const test1 = [
 	[TELETEXT_COLOR_BLACK, 48, 96, 112],
@@ -22,14 +21,14 @@ const test1 = [
 	[44, 60, 108, 124],
 	[45, 61, 109, 125],
 	[46, 62, 110, 126],
-	[47, 63, 111, 127]
+	[47, 63, 111, 127],
 ];
 
 describe('png2teletext', function() {
 	it('should return with the correct teletext data', function() {
-		let data = fs.readFileSync('./test/test.png'),
-			png = PNG.sync.read(data),
-			teletext = png2teletext(png.data, png.width);
+		const data = fs.readFileSync('./test/test.png');
+		const png = PNG.sync.read(data);
+		const teletext = png2teletext(png.data, png.width);
 
 		assert.deepStrictEqual(teletext, test1);
 	});
