@@ -1,11 +1,24 @@
-const {create2dArray, forEach2d, copy2dArray, getMask, getTeletextDimensions,
-	translatePngCoordinatesToTeletext, getSegmentCoordinates,
-	getPngHeight, getPngCoordinatesFromBytePosition,
-	translateRgbToTeletextColor} = require('./utils');
+const {
+	create2dArray,
+	forEach2d,
+	copy2dArray,
+	getMask,
+	getTeletextDimensions,
+	translatePngCoordinatesToTeletext,
+	getSegmentCoordinates,
+	getPngHeight,
+	getPngCoordinatesFromBytePosition,
+	translateRgbToTeletextColor,
+} = require('./utils');
 
-const {TELETEXT_EMPTY_CHARACTER, NUMBER_OF_PNG_CHANNELS, PNG_CHANNEL_ALPHA,
-	PNG_CHANNEL_RED, PNG_CHANNEL_GREEN, PNG_CHANNEL_BLUE} = require('./consts.js');
-
+const {
+	TELETEXT_EMPTY_CHARACTER,
+	NUMBER_OF_PNG_CHANNELS,
+	PNG_CHANNEL_ALPHA,
+	PNG_CHANNEL_RED,
+	PNG_CHANNEL_GREEN,
+	PNG_CHANNEL_BLUE,
+} = require('./consts.js');
 
 function mapImageData(buffer, pngWidth, fill, callback) {
 	let height = getPngHeight(buffer, pngWidth);
@@ -20,33 +33,44 @@ function mapImageData(buffer, pngWidth, fill, callback) {
 			buffer[i + PNG_CHANNEL_RED],
 			buffer[i + PNG_CHANNEL_GREEN],
 			buffer[i + PNG_CHANNEL_BLUE],
-			buffer[i + PNG_CHANNEL_ALPHA]
+			buffer[i + PNG_CHANNEL_ALPHA],
 		];
 		let character = map[teletextRow][teletextCol];
 
-		map[teletextRow][teletextCol] =
-			callback(color, character, segmentRow, segmentCol);
+		map[teletextRow][teletextCol] = callback(
+			color,
+			character,
+			segmentRow,
+			segmentCol
+		);
 	}
 
 	return map;
 }
 
-
 function generateCharacterMap(buffer, pngWidth) {
-	return mapImageData(buffer, pngWidth, TELETEXT_EMPTY_CHARACTER,
-		(color, character, segmentRow, segmentCol) => (
+	return mapImageData(
+		buffer,
+		pngWidth,
+		TELETEXT_EMPTY_CHARACTER,
+		(color, character, segmentRow, segmentCol) =>
 			/* If the alpha channel is not zero. */
-			(color[PNG_CHANNEL_ALPHA] > 0x00) ?
-				character |= getMask(segmentRow, segmentCol) : character
-		)
+			color[PNG_CHANNEL_ALPHA] > 0x00
+				? (character |= getMask(segmentRow, segmentCol))
+				: character
 	);
 }
 
 function generateColorMap(buffer, pngWidth) {
-	return mapImageData(buffer, pngWidth, null, (color, character) => (
-		(color[PNG_CHANNEL_ALPHA] === 0x00) ?
-			character : translateRgbToTeletextColor(color)
-	));
+	return mapImageData(
+		buffer,
+		pngWidth,
+		null,
+		(color, character) =>
+			color[PNG_CHANNEL_ALPHA] === 0x00
+				? character
+				: translateRgbToTeletextColor(color)
+	);
 }
 
 function mergeColorMapAndCharacterMap(characterMap, colorMap) {
@@ -71,4 +95,4 @@ module.exports = function png2teletext(imageBuffer, width) {
 		generateCharacterMap(imageBuffer, width),
 		generateColorMap(imageBuffer, width)
 	);
-}
+};

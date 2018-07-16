@@ -1,6 +1,4 @@
 node_modules
-dist
-browser
 *.log
 .nyc_output
 coverage

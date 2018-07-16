@@ -15,10 +15,7 @@ describe('create2dArray', function() {
 
 describe('copy2dArray', function() {
 	it('should return an array', function() {
-		let arr = copy2dArray([
-			[1, 2],
-			[3, 4]
-		]);
+		let arr = copy2dArray([[1, 2], [3, 4]]);
 		assert(Array.isArray(arr));
 	});
 });
