@@ -6,7 +6,7 @@ const fs = require('fs');
 const PNG = require('pngjs').PNG;
 
 const test1 = [
-	[TELETEXT_COLOR_BLACK, 48, 96, 112],
+	[32, 48, 96, 112],
 	[33, 49, 97, 113],
 	[34, 50, 98, 114],
 	[35, 51, 99, 115],
