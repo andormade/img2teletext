@@ -1,6 +1,6 @@
 # png2teletext
 
-png2teletext is a functional JavaScript library for generating teletext level 1 compatible data from PNGs.
+png2teletext is a JavaScript library for converting images to teletext level 1 compatible data.
 
 ![poes]
 
@@ -12,6 +12,8 @@ png2teletext is a functional JavaScript library for generating teletext level 1 
 - npm v5 or older
 
 ## Installation
+
+This module is distributed via both npm and yarn.
 
     $ npm install png2teletext --save
 
