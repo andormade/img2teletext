@@ -4,12 +4,6 @@ const {
 	TELETEXT_CHARACTER_WIDTH,
 } = require('./consts');
 
-const create2dArray = function(rows, cols, filler) {
-	return new Array(rows).fill(null).map(() => {
-		return new Array(cols).fill(filler);
-	});
-}
-
 const getPngCoordinatesFromBytePosition = function(pos, width) {
 	const byteWidth = width * NUMBER_OF_PNG_CHANNELS;
 	return [
@@ -40,7 +34,6 @@ const getPngHeight = (pngData, width) =>
 	Math.ceil(pngData.length / NUMBER_OF_PNG_CHANNELS / width);
 
 module.exports = {
-	create2dArray,
 	getPngCoordinatesFromBytePosition,
 	getMask,
 	translatePngCoordinatesToTeletext,

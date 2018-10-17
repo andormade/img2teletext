@@ -1,5 +1,4 @@
 const {
-	create2dArray,
 	getMask,
 	getTeletextDimensions,
 	translatePngCoordinatesToTeletext,
@@ -23,7 +22,8 @@ const mapImageData = function(buffer, pngWidth, fill, callback) {
 		pngWidth,
 		height
 	);
-	const map = create2dArray(teletextRows, teletextCols, fill);
+
+	const map = new Uint8Array(teletextRows * teletextCols).fill(fill);
 
 	for (let i = 0; i < buffer.length; i += NUMBER_OF_PNG_CHANNELS) {
 		const [x, y] = getPngCoordinatesFromBytePosition(i, pngWidth);
@@ -38,9 +38,9 @@ const mapImageData = function(buffer, pngWidth, fill, callback) {
 			buffer[i + PNG_CHANNEL_BLUE],
 			buffer[i + PNG_CHANNEL_ALPHA],
 		];
-		const character = map[teletextRow][teletextCol];
+		const character = map[teletextRow * teletextCols + teletextCol];
 
-		map[teletextRow][teletextCol] = callback(
+		map[teletextRow * teletextCols + teletextCol] = callback(
 			color,
 			character,
 			segmentRow,

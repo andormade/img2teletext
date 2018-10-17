@@ -1,6 +1,6 @@
 # png2teletext
 
-png2teletext is a JavaScript library for converting PNGs to teletext level 1 compatible data. Starting from the upper leftmost, the algorithm goes by 2x3 blocks of pixels, and translates them to teletext mosaic charachters.
+This is a CLI application for converting images to teletext level 1 compatible data. Starting from the upper leftmost, the algorithm goes by 2x3 blocks of pixels, and translates them to teletext mosaic charachters. It can also be used as a Node.js library.
 
 ![poes]
 
@@ -11,15 +11,19 @@ It handles images of any dimensions, they don't have to be within the constraint
 ## Requirements
 
 - node v8 or older (It probably works with older versions as well, but I haven't tested it on anything older than v8.9.0.)
-- npm v5 or older
+- npm v5 or older (It comes with node.)
 
 ## Installation
 
 This module is distributed via both npm and yarn.
 
-    $ npm install png2teletext --save
+    $ npm install png2teletext --g
 
-## Example with pngjs
+## Command line example
+
+    $ png2teletext ./test/test.png --out teletextData.bin
+
+## Using it as a Node.js library
 
     const png2teletext = require('png2teletext');
     const { PNG } = require('pngjs');
@@ -31,3 +35,4 @@ This module is distributed via both npm and yarn.
 
     console.log(teletextData);
 
+This code is released under the MIT license, feel free to do whatever you want with it.

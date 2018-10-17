@@ -1,8 +1,11 @@
 {
   "name": "png2teletext",
-  "version": "2.0.1",
+  "version": "3.0.0",
   "description": "PNG to Teletext graphics converter",
   "main": "src/index.js",
+  "bin": {
+    "png2teletext" : "./bin/png2teletext.js"
+  },
   "scripts": {
     "prepublish": "npm run test",
     "test": "nyc mocha"
@@ -30,5 +33,8 @@
     "nyc": "^13.1.0",
     "pngjs": "^3.3.3",
     "rewire": "^4.0.1"
+  },
+  "dependencies": {
+    "commander": "^2.19.0"
   }
 }
