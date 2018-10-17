@@ -10,7 +10,7 @@ It handles images of any dimensions, they don't have to be within the constraint
 
 ## Requirements
 
-- node v8 or older
+- node v8 or older (It probably works with older versions as well, but I haven't tested it on anything older than v8.9.0.)
 - npm v5 or older
 
 ## Installation
