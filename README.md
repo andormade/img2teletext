@@ -1,10 +1,12 @@
 # png2teletext
 
-png2teletext is a JavaScript library for converting PNGs to teletext level 1 compatible data. Starting from the upper rightmost, the algorithm goes by 2x3 blocks of pixels, and translates them to teletext mosaic charachters.
+png2teletext is a JavaScript library for converting PNGs to teletext level 1 compatible data. Starting from the upper leftmost, the algorithm goes by 2x3 blocks of pixels, and translates them to teletext mosaic charachters.
 
 ![poes]
 
 [poes]: poes.gif
+
+It handles images of any dimensions, they don't have to be within the constraints of a standard teletext page.
 
 ## Requirements
 
