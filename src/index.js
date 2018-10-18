@@ -10,14 +10,27 @@ const {
 const {
 	TELETEXT_EMPTY_CHARACTER,
 	NUMBER_OF_PNG_CHANNELS,
-	PNG_CHANNEL_ALPHA,
-	PNG_CHANNEL_RED,
-	PNG_CHANNEL_GREEN,
-	PNG_CHANNEL_BLUE,
 } = require('./consts.js');
 
+const getImageHeight = function(imageBuffer, numberOfChannels, width) {
+	return Math.ceil(imageBuffer.length / numberOfChannels / width);
+};
+
+const forEachPixel = function(imageBuffer, numberOfChannels, width, callback) {
+	for (let i = 0; i < imageBuffer.length; i += numberOfChannels) {
+		const [x, y] = getPngCoordinatesFromBytePosition(i, width);
+		const color = imageBuffer.slice(i, i + numberOfChannels);
+		callback(x, y, color);
+	}
+};
+
+const setMosaicCharacterSegment = function(character, row, col) {
+	const mask = col === 1 && row === 2 ? 1 << 6 : 1 << (col + row * 2)
+	return (character |= mask);
+}
+
 const mapImageData = function(buffer, pngWidth, fill, callback) {
-	const height = getPngHeight(buffer, pngWidth);
+	const height = getImageHeight(buffer, 4, pngWidth);
 	const [teletextRows, teletextCols] = getTeletextDimensions(
 		pngWidth,
 		height
@@ -25,19 +38,17 @@ const mapImageData = function(buffer, pngWidth, fill, callback) {
 
 	const map = new Uint8Array(teletextRows * teletextCols).fill(fill);
 
-	for (let i = 0; i < buffer.length; i += NUMBER_OF_PNG_CHANNELS) {
-		const [x, y] = getPngCoordinatesFromBytePosition(i, pngWidth);
+	forEachPixel(buffer, NUMBER_OF_PNG_CHANNELS, pngWidth, function(
+		x,
+		y,
+		color
+	) {
 		const [teletextRow, teletextCol] = translatePngCoordinatesToTeletext(
 			x,
 			y
 		);
 		const [segmentRow, segmentCol] = getSegmentCoordinates(x, y);
-		const color = [
-			buffer[i + PNG_CHANNEL_RED],
-			buffer[i + PNG_CHANNEL_GREEN],
-			buffer[i + PNG_CHANNEL_BLUE],
-			buffer[i + PNG_CHANNEL_ALPHA],
-		];
+
 		const character = map[teletextRow * teletextCols + teletextCol];
 
 		map[teletextRow * teletextCols + teletextCol] = callback(
@@ -46,7 +57,7 @@ const mapImageData = function(buffer, pngWidth, fill, callback) {
 			segmentRow,
 			segmentCol
 		);
-	}
+	});
 
 	return map;
 };
@@ -58,8 +69,8 @@ module.exports = function png2teletext(buffer, pngWidth) {
 		TELETEXT_EMPTY_CHARACTER,
 		(color, character, segmentRow, segmentCol) =>
 			/* If the alpha channel is not zero. */
-			color[PNG_CHANNEL_ALPHA] > 0x00
-				? (character |= getMask(segmentRow, segmentCol))
+			color[3] > 0x00
+				? setMosaicCharacterSegment(character, segmentRow, segmentCol)
 				: character
 	);
 };
