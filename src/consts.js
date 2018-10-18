@@ -1,3 +1,5 @@
+'use strict';
+
 const TELETEXT_COLOR_BLACK = 0x10;
 const TELETEXT_COLOR_RED = 0x11;
 const TELETEXT_COLOR_GREEN = 0x12;

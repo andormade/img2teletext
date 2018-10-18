@@ -1,14 +1,27 @@
+'use strict';
+
 const getImageCoordinatesFromBytePosition = function(
 	pos,
 	numberOfChannels,
 	imageWidth
 ) {
 	const byteWidth = imageWidth * numberOfChannels;
-	return [(pos % byteWidth) / numberOfChannels, Math.floor(pos / byteWidth)];
+	const x = (pos % byteWidth) / numberOfChannels;
+	const y = Math.floor(pos / byteWidth);
+	return [x, y];
 };
 
 const getImageHeight = function(imageBuffer, numberOfChannels, imageWidth) {
-	return Math.ceil(imageBuffer.length / numberOfChannels / imageWidth);
+	const numberOfPixels = imageBuffer.length / numberOfChannels;
+	return Math.ceil(numberOfPixels / imageWidth);
+};
+
+const getPixelDataFromBytePosition = function(
+	imageBuffer,
+	byteCounter,
+	numberOfChannels
+) {
+	return imageBuffer.slice(byteCounter, byteCounter + numberOfChannels);
 };
 
 const forEachPixel = function(
@@ -27,16 +40,18 @@ const forEachPixel = function(
 			numberOfChannels,
 			imageWidth
 		);
-		const color = imageBuffer.slice(
+		const pixel = getPixelDataFromBytePosition(
+			imageBuffer,
 			byteCounter,
-			byteCounter + numberOfChannels
+			numberOfChannels
 		);
-		callback(x, y, color);
+		callback(x, y, pixel);
 	}
 };
 
 module.exports = {
 	getImageCoordinatesFromBytePosition,
 	getImageHeight,
+	getPixelDataFromBytePosition,
 	forEachPixel,
 };

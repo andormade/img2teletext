@@ -1,3 +1,5 @@
+'use strict';
+
 const { getImageHeight } = require('./imageUtils');
 
 const {

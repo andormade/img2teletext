@@ -1,3 +1,5 @@
+'use strict';
+
 const {
 	TELETEXT_CHARACTER_HEIGHT,
 	TELETEXT_CHARACTER_WIDTH,
