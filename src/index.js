@@ -34,6 +34,7 @@ const forEachSegment = function(
 			y
 		);
 		const [segmentRow, segmentCol] = getSegmentCoordinates(x, y);
+
 		callback(teletextRow, teletextCol, segmentRow, segmentCol, color);
 	});
 };
@@ -43,43 +44,35 @@ const setMosaicCharacterSegment = function(character, row, col) {
 	return (character |= mask);
 };
 
-const mapImageData = function(buffer, pngWidth, fill, callback) {
-	const height = getImageHeight(buffer, 4, pngWidth);
+const generateTeletextData = function(buffer, imageWidth, callback) {
+	const imageHeight = getImageHeight(buffer, 4, imageWidth);
 	const [teletextRows, teletextCols] = getTeletextDimensions(
-		pngWidth,
-		height
+		imageWidth,
+		imageHeight
 	);
 
-	const map = new Uint8Array(teletextRows * teletextCols).fill(fill);
+	const teletextData = new Uint8Array(teletextRows * teletextCols).fill(
+		TELETEXT_EMPTY_CHARACTER
+	);
 
-	forEachSegment(buffer, NUMBER_OF_PNG_CHANNELS, pngWidth, function(
+	forEachSegment(buffer, NUMBER_OF_PNG_CHANNELS, imageWidth, function(
 		teletextRow,
 		teletextCol,
 		segmentRow,
 		segmentCol,
 		color
 	) {
-		const character = map[teletextRow * teletextCols + teletextCol];
-		map[teletextRow * teletextCols + teletextCol] = callback(
-			color,
-			character,
-			segmentRow,
-			segmentCol
-		);
+		const position = teletextRow * teletextCols + teletextCol;
+		const character = map[position];
+		teletextData[position] =
+			color[3] > 0x00
+				? setMosaicCharacterSegment(character, segmentRow, segmentCol)
+				: character;
 	});
 
-	return map;
+	return teletextData;
 };
 
 module.exports = function png2teletext(buffer, pngWidth) {
-	return mapImageData(
-		buffer,
-		pngWidth,
-		TELETEXT_EMPTY_CHARACTER,
-		(color, character, segmentRow, segmentCol) =>
-			/* If the alpha channel is not zero. */
-			color[3] > 0x00
-				? setMosaicCharacterSegment(character, segmentRow, segmentCol)
-				: character
-	);
+	return generateTeletextData(buffer, pngWidth);
 };
