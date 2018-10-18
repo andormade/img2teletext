@@ -1,5 +1,5 @@
 const assert = require('assert');
-const { translateImageCoordinatesToTeletext } = require('../src/utils');
+const { translateImageCoordinatesToTeletext } = require('../src/teletextUtils');
 
 describe('translateImageCoordinatesToTeletext', function() {
 	it('should return an array', function() {
