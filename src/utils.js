@@ -4,7 +4,7 @@ const {
 	TELETEXT_CHARACTER_WIDTH,
 } = require('./consts');
 
-const getPngCoordinatesFromBytePosition = function(pos, width) {
+const getImageCoordinatesFromBytePosition = function(pos, width) {
 	const byteWidth = width * NUMBER_OF_PNG_CHANNELS;
 	return [
 		(pos % byteWidth) / NUMBER_OF_PNG_CHANNELS,
@@ -12,7 +12,7 @@ const getPngCoordinatesFromBytePosition = function(pos, width) {
 	];
 }
 
-const translatePngCoordinatesToTeletext = (x, y) => [
+const translateImageCoordinatesToTeletext = (x, y) => [
 	Math.floor(y / TELETEXT_CHARACTER_HEIGHT),
 	Math.floor(x / TELETEXT_CHARACTER_WIDTH),
 ];
@@ -28,8 +28,8 @@ const getTeletextDimensions = (pngWidth, pngHeight) => [
 ];
 
 module.exports = {
-	getPngCoordinatesFromBytePosition,
-	translatePngCoordinatesToTeletext,
+	getImageCoordinatesFromBytePosition,
+	translateImageCoordinatesToTeletext,
 	getSegmentCoordinates,
 	getTeletextDimensions,
 };

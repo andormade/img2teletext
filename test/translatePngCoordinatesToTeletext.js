@@ -1,12 +1,15 @@
 const assert = require('assert');
-const { translatePngCoordinatesToTeletext } = require('../src/utils');
+const { translateImageCoordinatesToTeletext } = require('../src/utils');
 
-describe('translatePngCoordinatesToTeletext', function() {
+describe('translateImageCoordinatesToTeletext', function() {
 	it('should return an array', function() {
-		assert(Array.isArray(translatePngCoordinatesToTeletext(10, 10)));
+		assert(Array.isArray(translateImageCoordinatesToTeletext(10, 10)));
 	});
 
 	it('(2, 3) => [1, 1]', function() {
-		assert.deepStrictEqual(translatePngCoordinatesToTeletext(2, 3), [1, 1]);
+		assert.deepStrictEqual(translateImageCoordinatesToTeletext(2, 3), [
+			1,
+			1,
+		]);
 	});
 });

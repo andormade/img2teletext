@@ -1,10 +1,8 @@
 const {
-	getMask,
 	getTeletextDimensions,
-	translatePngCoordinatesToTeletext,
+	translateImageCoordinatesToTeletext,
 	getSegmentCoordinates,
-	getPngHeight,
-	getPngCoordinatesFromBytePosition,
+	getImageCoordinatesFromBytePosition,
 } = require('./utils');
 
 const {
@@ -18,16 +16,32 @@ const getImageHeight = function(imageBuffer, numberOfChannels, width) {
 
 const forEachPixel = function(imageBuffer, numberOfChannels, width, callback) {
 	for (let i = 0; i < imageBuffer.length; i += numberOfChannels) {
-		const [x, y] = getPngCoordinatesFromBytePosition(i, width);
+		const [x, y] = getImageCoordinatesFromBytePosition(i, width);
 		const color = imageBuffer.slice(i, i + numberOfChannels);
 		callback(x, y, color);
 	}
 };
 
+const forEachSegment = function(
+	imageBuffer,
+	numberOfChannels,
+	width,
+	callback
+) {
+	forEachPixel(imageBuffer, numberOfChannels, width, function(x, y, color) {
+		const [teletextRow, teletextCol] = translateImageCoordinatesToTeletext(
+			x,
+			y
+		);
+		const [segmentRow, segmentCol] = getSegmentCoordinates(x, y);
+		callback(teletextRow, teletextCol, segmentRow, segmentCol, color);
+	});
+};
+
 const setMosaicCharacterSegment = function(character, row, col) {
-	const mask = col === 1 && row === 2 ? 1 << 6 : 1 << (col + row * 2)
+	const mask = col === 1 && row === 2 ? 1 << 6 : 1 << (col + row * 2);
 	return (character |= mask);
-}
+};
 
 const mapImageData = function(buffer, pngWidth, fill, callback) {
 	const height = getImageHeight(buffer, 4, pngWidth);
@@ -38,19 +52,14 @@ const mapImageData = function(buffer, pngWidth, fill, callback) {
 
 	const map = new Uint8Array(teletextRows * teletextCols).fill(fill);
 
-	forEachPixel(buffer, NUMBER_OF_PNG_CHANNELS, pngWidth, function(
-		x,
-		y,
+	forEachSegment(buffer, NUMBER_OF_PNG_CHANNELS, pngWidth, function(
+		teletextRow,
+		teletextCol,
+		segmentRow,
+		segmentCol,
 		color
 	) {
-		const [teletextRow, teletextCol] = translatePngCoordinatesToTeletext(
-			x,
-			y
-		);
-		const [segmentRow, segmentCol] = getSegmentCoordinates(x, y);
-
 		const character = map[teletextRow * teletextCols + teletextCol];
-
 		map[teletextRow * teletextCols + teletextCol] = callback(
 			color,
 			character,
