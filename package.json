@@ -1,6 +1,6 @@
 {
   "name": "png2teletext",
-  "version": "3.0.3",
+  "version": "3.0.4",
   "description": "PNG to Teletext graphics converter",
   "main": "src/index.js",
   "bin": {
