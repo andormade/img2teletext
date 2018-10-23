@@ -3,9 +3,10 @@
 const {
 	TELETEXT_CHARACTER_HEIGHT,
 	TELETEXT_CHARACTER_WIDTH,
+	TELETEXT_EMPTY_CHARACTER,
 } = require('./consts');
 
-const { forEachPixel } = require('./imageUtils');
+const { forEachPixel, getImageHeight } = require('./imageUtils');
 
 const translateImageCoordinatesToTeletext = function(x, y) {
 	return [
@@ -46,6 +47,44 @@ const forEachSegment = function(
 	});
 };
 
+const mapImageToTeletext = function(
+	imageBuffer,
+	numberOfChannels,
+	imageWidth,
+	callback
+) {
+	const imageHeight = getImageHeight(
+		imageBuffer,
+		numberOfChannels,
+		imageWidth
+	);
+	const [teletextRows, teletextCols] = getTeletextDimensions(
+		imageWidth,
+		imageHeight
+	);
+
+	const teletextBuffer = new Uint8Array(teletextRows * teletextCols).fill(
+		TELETEXT_EMPTY_CHARACTER
+	);
+
+	forEachSegment(imageBuffer, numberOfChannels, imageWidth, function(
+		teletextRow,
+		teletextCol,
+		segmentRow,
+		segmentCol,
+		pixel
+	) {
+		const position = teletextRow * teletextCols + teletextCol;
+		const character = teletextBuffer[position];
+
+		teletextBuffer[position] = callback(pixel)
+			? setMosaicCharacterSegment(character, segmentRow, segmentCol)
+			: character;
+	});
+
+	return teletextBuffer;
+};
+
 const setMosaicCharacterSegment = function(character, row, col) {
 	const mask = col === 1 && row === 2 ? 1 << 6 : 1 << (col + row * 2);
 	return (character |= mask);
@@ -57,4 +96,5 @@ module.exports = {
 	getTeletextDimensions,
 	forEachSegment,
 	setMosaicCharacterSegment,
+	mapImageToTeletext,
 };
