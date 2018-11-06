@@ -47,6 +47,30 @@ const forEachSegment = function(
 	});
 };
 
+const forEachCharacter = function(teletextBuffer, width, callback) {
+	for (let i = 0; i < teletextBuffer.length; i++) {
+		const row = Math.floor(i / width);
+		const col = i - row * width;
+		const character = teletextBuffer[i];
+		callback(row, col, character, i);
+	}
+};
+
+const cropToTeletextPage = function(teletextBuffer, originalWidth) {
+	const cropped = new Uint8Array(24 * 40).fill(TELETEXT_EMPTY_CHARACTER);
+	let i = 0;
+	forEachCharacter(teletextBuffer, originalWidth, function(
+		row,
+		col,
+		character
+	) {
+		if (row < newHeight && col < newWidth) {
+			cropped[i++] = character;
+		}
+	});
+	return cropped;
+};
+
 const mapImageToTeletext = function(
 	imageBuffer,
 	numberOfChannels,
@@ -97,4 +121,6 @@ module.exports = {
 	forEachSegment,
 	setMosaicCharacterSegment,
 	mapImageToTeletext,
+	forEachCharacter,
+	cropToTeletextPage,
 };

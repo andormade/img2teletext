@@ -2,9 +2,10 @@
 'use strict';
 
 const program = require('commander');
-const png2teletext = require('..');
+const img2teletext = require('..');
 const { PNG } = require('pngjs');
 const fs = require('fs');
+const { encode } = require('teletexthash');
 
 program
 	.arguments('<file>')
@@ -15,7 +16,7 @@ program
 		const fileBuffer = fs.readFileSync(file);
 		const png = PNG.sync.read(fileBuffer);
 
-		const teletextBuffer = png2teletext(png.data, png.width);
+		const teletextBuffer = img2teletext(png.data, png.width);
 
 		fs.writeFileSync(program.out, teletextBuffer);
 	})

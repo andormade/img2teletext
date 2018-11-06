@@ -1,4 +1,4 @@
-# png2teletext
+# img2teletext
 
 This is a CLI application for converting images to teletext level 1 compatible data. Starting from the upper leftmost, the algorithm goes by 2x3 blocks of pixels, and translates them to teletext mosaic charachters. It can also be used as a Node.js library.
 
@@ -17,21 +17,21 @@ It handles images of any dimensions, they don't have to be within the constraint
 
 This module is distributed via both npm and yarn.
 
-    $ npm install png2teletext --g
+    $ npm install img2teletext --g
 
 ## Command line example
 
-    $ png2teletext ./test/test.png --out teletextData.bin
+    $ img2teletext ./test/test.png --out teletextData.bin
 
 ## Using it as a Node.js library
 
-    const png2teletext = require('png2teletext');
+    const img2teletext = require('img2teletext');
     const { PNG } = require('pngjs');
     const fs = require('fs');
 
     const data = fs.readFileSync('./test/test.png');
 	const png = PNG.sync.read(data);
-	const teletextData = png2teletext(png.data, png.width);
+	const teletextData = img2teletext(png.data, png.width);
 
     console.log(teletextData);
 

@@ -1,26 +1,15 @@
 'use strict';
 
 const { mapImageToTeletext } = require('./teletextUtils');
+const { avg } = require('./mathUtils');
 
-const generateTeletextData = function(
-	imageBuffer,
-	numberOfChannels,
-	imageWidth
-) {
+module.exports = function img2teletext(imageBuffer, imageWidth, numberOfChannels = 4) {
 	return mapImageToTeletext(
 		imageBuffer,
 		numberOfChannels,
 		imageWidth,
 		function(pixel) {
-			return pixel[3] > 0x00;
+			return avg(...pixel) > 0x80;
 		}
 	);
-};
-
-module.exports = function png2teletext(imageBuffer, imageWidth, options = {}) {
-	const { raw = true } = options;
-
-	if (raw) {
-		return generateTeletextData(imageBuffer, 4, imageWidth);
-	}
 };

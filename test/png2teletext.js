@@ -1,5 +1,5 @@
 const rewire = require('rewire');
-const png2teletext = rewire('../src/index');
+const img2teletext = rewire('../src/index');
 const assert = require('assert');
 const fs = require('fs');
 const PNG = require('pngjs').PNG;
@@ -71,11 +71,11 @@ const test1 = new Uint8Array([
 	0x7f,
 ]);
 
-describe('png2teletext', function() {
+describe('img2teletext', function() {
 	it('should return with the correct teletext data', function() {
 		const data = fs.readFileSync('./test/test.png');
 		const png = PNG.sync.read(data);
-		const teletext = png2teletext(png.data, png.width);
+		const teletext = img2teletext(png.data, png.width);
 
 		assert.deepStrictEqual(teletext, test1);
 	});
