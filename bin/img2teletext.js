@@ -14,14 +14,14 @@ const getImageBufferAndWidth = function(file) {
 	const fileBuffer = fs.readFileSync(file);
 
 	switch (path.extname(file)) {
-		case 'jpeg':
-		case 'jpg':
+		case '.jpeg':
+		case '.jpg':
 			const jpgData = jpeg.decode(fileBuffer);
 			return {
 				buffer: jpgData.data,
 				width: jpgData.width,
 			};
-		case 'png':
+		case '.png':
 			const pngData = PNG.sync.read(fileBuffer);
 			return {
 				buffer: pngData.data,
@@ -43,7 +43,9 @@ program
 	.action(function(file, cmd) {
 		const { buffer, width } = getImageBufferAndWidth(file);
 		const teletextBuffer = img2teletext(buffer, width);
-		const teletextHash = encode(cropToTeletextPage(teletextBuffer));
+		const teletextHash = encode(
+			cropToTeletextPage(teletextBuffer, width / 2)
+		);
 		if (cmd.edittf) {
 			console.log('http://edit.tf/' + teletextHash);
 		} else if (cmd.zxnet) {

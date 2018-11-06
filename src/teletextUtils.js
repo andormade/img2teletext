@@ -19,6 +19,28 @@ const getSegmentCoordinates = function(x, y) {
 	return [y % TELETEXT_CHARACTER_HEIGHT, x % TELETEXT_CHARACTER_WIDTH];
 };
 
+const getCharacterCoordinates = function(position, width) {
+	const row = Math.floor(position / width);
+	const col = position - row * width;
+	return [row, col];
+};
+
+const getHeight = function(buffer, width) {
+	return Math.ceil(buffer.length / width);
+};
+
+const isCellExitsts = function(row, col, buffer, width) {
+	return col < width && row < getHeight(buffer, width);
+};
+
+const getCellPositionInBuffer = function(row, col, buffer, width) {
+	return row * width + col;
+};
+
+const getCell = function(row, col, buffer, width) {
+	return buffer[getCellPositionInBuffer(row, col, buffer, width)];
+};
+
 const getTeletextDimensions = function(pngWidth, pngHeight) {
 	return [
 		Math.ceil(pngHeight / TELETEXT_CHARACTER_HEIGHT),
@@ -49,23 +71,19 @@ const forEachSegment = function(
 
 const forEachCharacter = function(teletextBuffer, width, callback) {
 	for (let i = 0; i < teletextBuffer.length; i++) {
-		const row = Math.floor(i / width);
-		const col = i - row * width;
+		const [row, col] = getCharacterCoordinates(i, width);
 		const character = teletextBuffer[i];
 		callback(row, col, character, i);
 	}
 };
 
 const cropToTeletextPage = function(teletextBuffer, originalWidth) {
-	const cropped = new Uint8Array(24 * 40).fill(TELETEXT_EMPTY_CHARACTER);
-	let i = 0;
-	forEachCharacter(teletextBuffer, originalWidth, function(
-		row,
-		col,
-		character
-	) {
-		if (row < newHeight && col < newWidth) {
-			cropped[i++] = character;
+	const cropped = new Uint8Array(25 * 40).fill(TELETEXT_EMPTY_CHARACTER);
+
+	forEachCharacter(cropped, 40, function(row, col) {
+		if (isCellExitsts(row, col, teletextBuffer, originalWidth)) {
+			const pos = getCellPositionInBuffer(row, col, cropped, 40);
+			cropped[pos] = getCell(row, col, teletextBuffer, originalWidth);
 		}
 	});
 	return cropped;
