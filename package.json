@@ -35,6 +35,7 @@
   },
   "dependencies": {
     "commander": "^2.19.0",
+    "image-buffer-utils": "^1.0.0",
     "jpeg-js": "^0.3.4",
     "pngjs": "^3.3.3",
     "teletexthash": "^0.1.0"

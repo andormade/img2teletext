@@ -6,7 +6,7 @@ const {
 	TELETEXT_EMPTY_CHARACTER,
 } = require('./consts');
 
-const { forEachPixel, getImageHeight } = require('./imageUtils');
+const { forEachPixel, getImageHeight } = require('image-buffer-utils');
 
 const translateImageCoordinatesToTeletext = function(x, y) {
 	return [
@@ -54,7 +54,7 @@ const forEachSegment = function(
 	imageWidth,
 	callback
 ) {
-	forEachPixel(imageBuffer, numberOfChannels, imageWidth, function(
+	forEachPixel(imageBuffer, imageWidth, function(
 		x,
 		y,
 		color
@@ -66,7 +66,7 @@ const forEachSegment = function(
 		const [segmentRow, segmentCol] = getSegmentCoordinates(x, y);
 
 		callback(teletextRow, teletextCol, segmentRow, segmentCol, color);
-	});
+	}, numberOfChannels);
 };
 
 const forEachCharacter = function(teletextBuffer, width, callback) {
@@ -97,8 +97,8 @@ const mapImageToTeletext = function(
 ) {
 	const imageHeight = getImageHeight(
 		imageBuffer,
-		numberOfChannels,
-		imageWidth
+		imageWidth,
+		numberOfChannels
 	);
 	const [teletextRows, teletextCols] = getTeletextDimensions(
 		imageWidth,
