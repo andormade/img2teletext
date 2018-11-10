@@ -7,8 +7,9 @@ const { PNG } = require('pngjs');
 const jpeg = require('jpeg-js');
 const fs = require('fs');
 const { encode } = require('teletexthash');
-const { cropToTeletextPage } = require('../src/teletextUtils');
+const { fitToTeletextPage } = require('../src/teletextUtils');
 const path = require('path');
+const btoa = require('btoa');
 
 const getImageBufferAndWidth = function(file) {
 	const fileBuffer = fs.readFileSync(file);
@@ -38,20 +39,38 @@ const getImageBufferAndWidth = function(file) {
 program
 	.arguments('<file>')
 	.option('-o, --out <out>', 'The output file.')
-	.option('--edittf', 'Generate edit.tf url.')
-	.option('--zxnet', 'Generate zxnet url.')
+	.option('-b, --bin', 'Generate binary output.')
+	.option('-e, --edittf', 'Generate edit.tf url.')
+	.option('-z, --zxnet', 'Generate zxnet url.')
+	.option('-b, --base64', 'Generate base64.')
+	.option('-j, --json', 'Generate JSON output.')
+	.option(
+		'-h, --hash',
+		'Generate edit.tf and zxnet compatible teletext hash.'
+	)
 	.action(function(file, cmd) {
 		const { buffer, width } = getImageBufferAndWidth(file);
-		const teletextBuffer = img2teletext(buffer, width);
-		const teletextHash = encode(
-			cropToTeletextPage(teletextBuffer, width / 2)
+		const teletextBuffer = fitToTeletextPage(
+			img2teletext(buffer, width),
+			width / 2
 		);
+
+		const teletextHash = encode(teletextBuffer);
+
 		if (cmd.edittf) {
-			console.log('http://edit.tf/' + teletextHash);
+			process.stdout.write('http://edit.tf/' + teletextHash);
 		} else if (cmd.zxnet) {
-			console.log('https://zxnet.co.uk/teletext/editor/' + teletextHash);
-		} else {
-			fs.writeFileSync(program.out, teletextBuffer);
+			process.stdout.write(
+				'https://zxnet.co.uk/teletext/editor/' + teletextHash + '\n'
+			);
+		} else if (cmd.hash) {
+			process.stdout.write(teletextHash + '\n');
+		} else if (cmd.base64) {
+			process.stdout.write(btoa(teletextBuffer) + '\n');
+		} else if (cmd.bin) {
+			process.stdout.write(teletextBuffer);
+		} else if (cmd.json) {
+			process.stdout.write(`[${teletextBuffer.toString()}]\n`);
 		}
 	})
 	.parse(process.argv);

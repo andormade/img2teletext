@@ -34,6 +34,7 @@
     "rewire": "^4.0.1"
   },
   "dependencies": {
+    "btoa": "^1.2.1",
     "commander": "^2.19.0",
     "image-buffer-utils": "^1.0.0",
     "jpeg-js": "^0.3.4",

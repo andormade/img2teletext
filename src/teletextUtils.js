@@ -54,19 +54,20 @@ const forEachSegment = function(
 	imageWidth,
 	callback
 ) {
-	forEachPixel(imageBuffer, imageWidth, function(
-		x,
-		y,
-		color
-	) {
-		const [teletextRow, teletextCol] = translateImageCoordinatesToTeletext(
-			x,
-			y
-		);
-		const [segmentRow, segmentCol] = getSegmentCoordinates(x, y);
+	forEachPixel(
+		imageBuffer,
+		imageWidth,
+		function(x, y, color) {
+			const [
+				teletextRow,
+				teletextCol,
+			] = translateImageCoordinatesToTeletext(x, y);
+			const [segmentRow, segmentCol] = getSegmentCoordinates(x, y);
 
-		callback(teletextRow, teletextCol, segmentRow, segmentCol, color);
-	}, numberOfChannels);
+			callback(teletextRow, teletextCol, segmentRow, segmentCol, color);
+		},
+		numberOfChannels
+	);
 };
 
 const forEachCharacter = function(teletextBuffer, width, callback) {
@@ -77,7 +78,7 @@ const forEachCharacter = function(teletextBuffer, width, callback) {
 	}
 };
 
-const cropToTeletextPage = function(teletextBuffer, originalWidth) {
+const fitToTeletextPage = function(teletextBuffer, originalWidth) {
 	const cropped = new Uint8Array(25 * 40).fill(TELETEXT_EMPTY_CHARACTER);
 
 	forEachCharacter(cropped, 40, function(row, col) {
@@ -140,5 +141,5 @@ module.exports = {
 	setMosaicCharacterSegment,
 	mapImageToTeletext,
 	forEachCharacter,
-	cropToTeletextPage,
+	fitToTeletextPage,
 };
