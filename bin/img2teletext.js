@@ -10,6 +10,7 @@ const { encode } = require('teletexthash');
 const { fitToTeletextPage } = require('../src/teletextUtils');
 const path = require('path');
 const btoa = require('btoa');
+const { version } = require('../package.json');
 
 const getImageBufferAndWidth = function(file) {
 	const fileBuffer = fs.readFileSync(file);
@@ -29,16 +30,13 @@ const getImageBufferAndWidth = function(file) {
 				width: pngData.width,
 			};
 		default:
-			return {
-				buffer: new Uint8Array(0),
-				width: 0,
-			};
+			throw 'Not supported file type.';
 	}
 };
 
 program
 	.arguments('<file>')
-	.option('-o, --out <out>', 'The output file.')
+	.version(version)
 	.option('-b, --bin', 'Generate binary output.')
 	.option('-e, --edittf', 'Generate edit.tf url.')
 	.option('-z, --zxnet', 'Generate zxnet url.')
@@ -49,7 +47,17 @@ program
 		'Generate edit.tf and zxnet compatible teletext hash.'
 	)
 	.action(function(file, cmd) {
-		const { buffer, width } = getImageBufferAndWidth(file);
+		let buffer, width;
+
+		if (!file) {
+			return;
+		}
+		try {
+			buffer = getImageBufferAndWidth(file);
+		} catch (error) {
+			console.error(error);
+		}
+
 		const teletextBuffer = fitToTeletextPage(
 			img2teletext(buffer, width),
 			width / 2
@@ -58,10 +66,10 @@ program
 		const teletextHash = encode(teletextBuffer);
 
 		if (cmd.edittf) {
-			process.stdout.write('http://edit.tf/' + teletextHash);
+			process.stdout.write(`http://edit.tf/${teletextHash}`);
 		} else if (cmd.zxnet) {
 			process.stdout.write(
-				'https://zxnet.co.uk/teletext/editor/' + teletextHash + '\n'
+				`https://zxnet.co.uk/teletext/editor/${teletextHash}\n`
 			);
 		} else if (cmd.hash) {
 			process.stdout.write(teletextHash + '\n');
