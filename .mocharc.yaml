@@ -1,0 +1,5 @@
+bail: true
+check-leaks: true
+color: true
+diff: true
+recursive: true
