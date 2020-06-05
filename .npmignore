@@ -1,5 +1,8 @@
-.gitignore
-.prettierrc
-.nyc_output
-yarn.lock
+*.log
+.cache
 .editorconfig
+.mocharc.yaml
+.nyc_output
+.prettierrc
+poes.gif
+README.md

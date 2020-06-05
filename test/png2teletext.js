@@ -1,5 +1,4 @@
-const rewire = require('rewire');
-const img2teletext = rewire('../src/index');
+const img2teletext = require('../dist/index').default;
 const assert = require('assert');
 const fs = require('fs');
 const PNG = require('pngjs').PNG;

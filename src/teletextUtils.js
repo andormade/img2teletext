@@ -1,54 +1,52 @@
-'use strict';
-
-const {
+import {
 	TELETEXT_CHARACTER_HEIGHT,
 	TELETEXT_CHARACTER_WIDTH,
-	TELETEXT_EMPTY_CHARACTER,
-} = require('./consts');
+	TELETEXT_EMPTY_CHARACTER
+} from './consts';
 
-const { forEachPixel, getImageHeight } = require('image-buffer-utils');
+import { forEachPixel, getImageHeight } from 'image-buffer-utils';
 
-const translateImageCoordinatesToTeletext = function(x, y) {
+export const translateImageCoordinatesToTeletext = function(x, y) {
 	return [
 		Math.floor(y / TELETEXT_CHARACTER_HEIGHT),
 		Math.floor(x / TELETEXT_CHARACTER_WIDTH),
 	];
 };
 
-const getSegmentCoordinates = function(x, y) {
+export const getSegmentCoordinates = function(x, y) {
 	return [y % TELETEXT_CHARACTER_HEIGHT, x % TELETEXT_CHARACTER_WIDTH];
 };
 
-const getCharacterCoordinates = function(position, width) {
+export const getCharacterCoordinates = function(position, width) {
 	const row = Math.floor(position / width);
 	const col = position - row * width;
 	return [row, col];
 };
 
-const getHeight = function(buffer, width) {
+export const getHeight = function(buffer, width) {
 	return Math.ceil(buffer.length / width);
 };
 
-const isCellExitsts = function(row, col, buffer, width) {
+export const isCellExitsts = function(row, col, buffer, width) {
 	return col < width && row < getHeight(buffer, width);
 };
 
-const getCellPositionInBuffer = function(row, col, buffer, width) {
+export const getCellPositionInBuffer = function(row, col, buffer, width) {
 	return row * width + col;
 };
 
-const getCell = function(row, col, buffer, width) {
+export const getCell = function(row, col, buffer, width) {
 	return buffer[getCellPositionInBuffer(row, col, buffer, width)];
 };
 
-const getTeletextDimensions = function(pngWidth, pngHeight) {
+export const getTeletextDimensions = function(pngWidth, pngHeight) {
 	return [
 		Math.ceil(pngHeight / TELETEXT_CHARACTER_HEIGHT),
 		Math.ceil(pngWidth / TELETEXT_CHARACTER_WIDTH),
 	];
 };
 
-const forEachSegment = function(
+export const forEachSegment = function(
 	imageBuffer,
 	numberOfChannels,
 	imageWidth,
@@ -70,7 +68,7 @@ const forEachSegment = function(
 	);
 };
 
-const forEachCharacter = function(teletextBuffer, width, callback) {
+export const forEachCharacter = function(teletextBuffer, width, callback) {
 	for (let i = 0; i < teletextBuffer.length; i++) {
 		const [row, col] = getCharacterCoordinates(i, width);
 		const character = teletextBuffer[i];
@@ -78,7 +76,7 @@ const forEachCharacter = function(teletextBuffer, width, callback) {
 	}
 };
 
-const fitToTeletextPage = function(teletextBuffer, originalWidth) {
+export const fitToTeletextPage = function(teletextBuffer, originalWidth) {
 	const cropped = new Uint8Array(25 * 40).fill(TELETEXT_EMPTY_CHARACTER);
 
 	forEachCharacter(cropped, 40, function(row, col) {
@@ -90,7 +88,7 @@ const fitToTeletextPage = function(teletextBuffer, originalWidth) {
 	return cropped;
 };
 
-const mapImageToTeletext = function(
+export const mapImageToTeletext = function(
 	imageBuffer,
 	numberOfChannels,
 	imageWidth,
@@ -128,18 +126,7 @@ const mapImageToTeletext = function(
 	return teletextBuffer;
 };
 
-const setMosaicCharacterSegment = function(character, row, col) {
+export const setMosaicCharacterSegment = function(character, row, col) {
 	const mask = col === 1 && row === 2 ? 1 << 6 : 1 << (col + row * 2);
 	return (character |= mask);
-};
-
-module.exports = {
-	translateImageCoordinatesToTeletext,
-	getSegmentCoordinates,
-	getTeletextDimensions,
-	forEachSegment,
-	setMosaicCharacterSegment,
-	mapImageToTeletext,
-	forEachCharacter,
-	fitToTeletextPage,
 };

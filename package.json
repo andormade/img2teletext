@@ -7,6 +7,8 @@
     "img2teletext": "./bin/img2teletext.js"
   },
   "scripts": {
+    "build": "parcel build src/index.js",
+    "dev": "parcel src/index.js",
     "prepublish": "npm run test",
     "test": "nyc mocha"
   },
@@ -31,7 +33,7 @@
   "devDependencies": {
     "mocha": "^7.2.0",
     "nyc": "^15.1.0",
-    "rewire": "^4.0.1"
+    "parcel-bundler": "^1.12.4"
   },
   "dependencies": {
     "btoa": "^1.2.1",
